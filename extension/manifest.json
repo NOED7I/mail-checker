@@ -1,0 +1,21 @@
+{
+  "background": {
+    "page": "background.html"
+  },
+  "browser_action": {
+    "default_title": "Mail Checker",
+    "default_popup": "popup.html"
+  },
+  "description": "Check the number of unseen messages in your mail box.",
+  "icons": {
+    "128": "icon_128.png"
+  },
+  "name": "Mail Checker",
+  "options_page": "options.html",
+  "permissions": [
+    "tabs", "http://*.aliapp.com/","http://*.sinaapp.com/"
+   ],
+  "version": "3.5",
+
+  "manifest_version": 2
+}

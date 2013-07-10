@@ -1,0 +1,19 @@
+.content{
+	width:310px;
+	text-align:center;
+	font-weight:bold;
+}
+.email{
+	width:240px;
+	height:20px;
+	float:left;
+	border:1px solid gray;
+	margin:1px;
+}
+.unseen{
+	width:50px;
+	height:20px;
+	float:left;
+	border:1px solid gray;
+	margin:1px;
+}
