@@ -1,7 +1,7 @@
 <?php
 /**
  * Mailer Checker Server
- * @author    TX [txthinking@gmail.com]
+ * @author  cloud@txthinking.com
  * @link    http://blog.txthinking.com
  * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html     GNU GPL v2
  * @version 1.3
@@ -20,7 +20,7 @@ if(!empty($_POST['username']) && !empty($_POST['password']) && !empty($_POST['se
 		$server = 'tcp://'.$server;	
 	}
 }else{
-	returnExit(1, "ç¼ºå°åæ°");
+	returnExit(1, "ERROR");
 }
 
 $tagInt = 0;
