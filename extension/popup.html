@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html ng-app>
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -7,9 +7,17 @@
         <link href="css/bootstrap.css" rel="stylesheet">
     </head>
     <body>
-        <div id="data"></div>
+        <div ng-controller="unseenC">
+            <table class="table table-striped">
+                <tr ng-repeat="u in us">
+                    <td>{{u.email}}</td>
+                    <td>{{u.unseen}}</td>
+                </tr>
+            </table>
+        </div>
         <script src="lib/jquery/jquery-1.10.2.js"></script>
         <script src="lib/bootstrap/bootstrap.js"></script>
+        <script src="lib/angular/angular.js"></script>
         <script src="js/popup.js"></script>
     </body>
 </html>

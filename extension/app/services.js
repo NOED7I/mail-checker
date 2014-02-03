@@ -9,17 +9,18 @@
 var ss = angular.module('ss', [
 ]);
 
-ss.factory('dbS', [
-    function(){
+ss.factory('dbS', ['callS',
+    function(callS){
         var read = function(){
-            if(localStorage.data === undefined){
-                return false;
+            if(!localStorage.data){
+                return [];
             }
             return angular.fromJson(localStorage.data);
         }
         var write = function(obj){
             var j = angular.toJson(obj);
             localStorage.data = j;
+            callS.call();
         }
         return {
             read : read,
@@ -31,11 +32,11 @@ ss.factory('dbS', [
 ss.factory('callS', [
     function(){
         var call = function(){
+            chrome.extension.getBackgroundPage().init();
             chrome.extension.getBackgroundPage().send();
         }
         return {
-            read : read,
-            write : write
+            call : call
         };
     }
 ]);

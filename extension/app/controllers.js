@@ -18,21 +18,6 @@ cs.controller('manageC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $rootScope.onExample = "";
         $rootScope.onError = "";
         $rootScope.accounts = dbS.read();
-        if ($rootScope.accounts === undefined)
-        $rootScope.accounts = [
-            {
-                email: "a@b.com",
-                password: "dddd",
-                imapServer: "aaa",
-                imapPort: "999",
-            },
-            {
-                email: "c@b.com",
-                password: "dddd",
-                imapServer: "aaa",
-                imapPort: "999",
-            }
-        ];
         $scope.remove = function(email){
             for(var i=0; i<$rootScope.accounts.length; i++){
                 if($rootScope.accounts[i].email === email){
