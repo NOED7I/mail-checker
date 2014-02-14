@@ -1,0 +1,20 @@
+package server
+
+import(
+    "net/http"
+    "code.google.com/p/go.net/websocket"
+    "log"
+    _ "net/http/pprof"
+)
+
+func Run() {
+    var err error
+    go StartPool()
+    http.HandleFunc("/", Root)
+    http.Handle("/ws/", websocket.Handler(Ws))
+    err = http.ListenAndServe("0.0.0.0:12345", nil)
+    if err != nil {
+        log.Fatal("ListenAndServe:", err)
+    }
+}
+

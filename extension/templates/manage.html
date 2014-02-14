@@ -1,0 +1,27 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <br/>
+            <div ng-repeat="a in accounts">
+                <h4>[{{a.email}}] <a href="javascript:void(0);" ng-click="remove(a.email)"><small class="pull-right">Remove</small></a></h4>
+                <form role="form">
+                    <div class="form-group">
+                        <input disabled ng-model="a.email" type="email" class="form-control" placeholder="Email">
+                    </div>
+                    <div class="form-group">
+                        <input disabled ng-model="a.password" type="password" class="form-control" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <input disabled ng-model="a.imapServer" type="text" class="form-control" placeholder="IMAP Server">
+                    </div>
+                    <div class="form-group">
+                        <input disabled ng-model="a.imapPort" type="text" class="form-control" placeholder="IMAP Port">
+                    </div>
+                </form>
+                <hr/>
+            </div>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
