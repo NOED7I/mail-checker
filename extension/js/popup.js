@@ -1,4 +1,4 @@
 function unseenC($scope){
-    $scope.us = angular.fromJSON(localStorage.unseen);
+    $scope.us = JSON.parse(localStorage.unseen);
 }
 

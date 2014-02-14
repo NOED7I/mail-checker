@@ -33507,168 +33507,358 @@ function ngViewFactory(   $route,   $anchorScroll,   $compile,   $controller,   
 
 
 })(window, window.angular);
-;/**
- * check new mail mailCount
- * @author    cloud@txthinking.com
- * @license    http://www.gnu.org/licenses/old-licenses/gpl-2.0.html     GNU GPL v2
- */
+;//
+// app main module
+//
+// Author Cloud@txthinking.com
+//
 
-////////////////////////////////////////////////////////////////////////
-var KEY = "47a7b49b6e621e5bf5f2439ef537c3ad";
-var SERVERS = new Array(
-	"http://bjphp.aliapp.com/chrome/mail-checker/checkMail2.php",
-	"http://bjphp.aliapp.com/chrome/mail-checker/checkMail2.php",
-	"http://bjphp.aliapp.com/chrome/mail-checker/checkMail2.php",
-	"http://bjphp.aliapp.com/chrome/mail-checker/checkMail2.php",
-	"http://bjphp.aliapp.com/chrome/mail-checker/checkMail2.php"
-);
-////////////////////////////////////////////////////////////////////////
+'use strict';
 
-chrome.browserAction.setIcon({path: "not_logged_in.png"});
+var app = angular.module('app', [
+  'ngRoute',
+  'cs',
+  'ds'
+]);
 
-/**
- * init
- */
-function init(){
-	
-	if(localStorage.username && localStorage.username != "undefined"){
-		chrome.browserAction.setIcon({path: "logged_in.png"});
-		chrome.browserAction.setBadgeBackgroundColor({color:[0, 127, 0, 255]});
-		chrome.browserAction.setBadgeText({text:""});
-	}else{
-		chrome.browserAction.setIcon({path: "not_logged_in.png"});
-		chrome.browserAction.setBadgeBackgroundColor({color:[102, 102, 102, 255]});
-		chrome.browserAction.setBadgeText({text:""});
-	}
-}
+app.config(['$routeProvider','$locationProvider',
+    function($routeProvider, $locationProvider) {
+        $routeProvider.
+        when('/manage', {
+            templateUrl: 'templates/manage.html',
+            controller: 'manageC'
+        }).
+        when('/add', {
+            templateUrl: 'templates/add.html',
+            controller: 'addC'
+        }).
+        when('/example', {
+            templateUrl: 'templates/example.html',
+            controller: 'exampleC'
+        }).
+        when('/error', {
+            templateUrl: 'templates/error.html',
+            controller: 'errorC'
+        }).
+        otherwise({
+            redirectTo: '/manage'
+        });
+        $locationProvider.html5Mode(true).hashPrefix('!');
+    }
+]);
+;//
+// controllers module
+//
+// Author Cloud@txthinking.comm
+//
 
-/**
- * Timer
- */
-function timer(){
-	if(localStorage.username && localStorage.username != "undefined"){
-		var usernameArray = localStorage.username.split("|");
-		var i;
-		for(i=0;i<usernameArray.length;i++){
-			check(i);
-		}
-	}
-	setTimeout(timer, 5000);
-}
+'use strict';
 
-/**
- * ajax
- */
-function check(index)
-{
-	var usernameArray = localStorage.username.split("|");
-	var passwordArray = localStorage.password.split("|");
-	var imapServerArray = localStorage.imapServer.split("|");
-	var serverPortArray = localStorage.serverPort.split("|");
-	
-	var username = usernameArray[index];
-	var password = passwordArray[index];
-	var imapServer = imapServerArray[index];
-	var serverPort = serverPortArray[index];
-	
-	$.ajax({
-		type: "POST",
-		url: SERVERS[index],
-		async: true,
-		cache: false,
-		dataType : 'json',
-		data : {
-	        "username" : goXor(KEY, username),
-	        "password" : goXor(KEY, password),
-	        "server" : goXor(KEY, imapServer),
-	        "port" : goXor(KEY, serverPort),
-	        "cache" : Math.random()
-	    },
-	    success : function(data){
-	    	if(data['code'] == 0){
-	    		var unseenMailCountSum = 0;
-	    		
-	    		//update localStorage.unseenMailCount
-	    		var unseenMailCountArray = localStorage.unseenMailCount.split("|");
-	    		unseenMailCountArray[index] = data['data'];
-	    		localStorage.unseenMailCount = unseenMailCountArray.join("|");
-	    		
-	    		var i;
-	    		for(i=0;i<unseenMailCountArray.length;i++){
-	    			//trans to int and plus
-	    			unseenMailCountSum += parseInt(unseenMailCountArray[i]);
-	    		}
-	    		
-	    		//show on browserAction
-	    		if(unseenMailCountSum == 0){
-	    			chrome.browserAction.setBadgeText({text:""});
-	    		}else{
-	    			//transfer interger to string
-	    			unseenMailCountSum = unseenMailCountSum+"";
-	    			chrome.browserAction.setBadgeText({text:unseenMailCountSum});
-	    		}
-	    	}
-	    }
-	});
-}
+var cs = angular.module('cs', [
+    'ss'
+]);
 
-/**
- * Called when the user clicks on the browser action.
- 
-var url;
-chrome.browserAction.onClicked.addListener(function(tab) {
-	url = localStorage.mailCheckerUrl || "https://www.google.com";
-	chrome.tabs.create({url: url});
-});
-*/
-/**
- * xor
- */
-function goXor(k, s) {
-	var i;
-	var j;
-	for (i=0; i<s.length; i++) {
-		for (j=0; j<k.length; j++) {
-			var temp = String.fromCharCode(s.charCodeAt(i)^k.charCodeAt(j));
-			s = s.substring(0, i) + temp + s.substring(i+1);
-		}
-	}
-	return s;
-}
-/**
- * execute init
- */
-//document.addEventListener('DOMContentLoaded', init);
-$(document).ready(function () {
-	  init();
-	  timer();
-});
+cs.controller('manageC', ['$rootScope', '$scope', '$timeout', 'dbS',
+    function($rootScope, $scope, $timeout, dbS) {
+        $rootScope.title = "Manage - Mail Checker";
+        $rootScope.onManage = "active";
+        $rootScope.onAdd = "";
+        $rootScope.onExample = "";
+        $rootScope.onError = "";
+        $rootScope.accounts = dbS.read();
+        $scope.remove = function(email){
+            for(var i=0; i<$rootScope.accounts.length; i++){
+                if($rootScope.accounts[i].email === email){
+                    $rootScope.accounts.splice(i,1);
+                    break;
+                }
+            }
+            dbS.write($rootScope.accounts);
+        }
+    }
+]);
 
+cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
+    function($rootScope, $scope, $timeout, dbS) {
+        $rootScope.title = "Add - Mail Checker";
+        $rootScope.onManage = "";
+        $rootScope.onAdd = "active";
+        $rootScope.onExample = "";
+        $rootScope.onError = "";
+        $rootScope.accounts = dbS.read();
 
+        $scope.email = "";
+        $scope.password = "";
+        $scope.imapServer = "";
+        $scope.imapPort = "";
 
-;function init(){
-	var usernameArray = localStorage.username.split("|");
-	var unseenMailCountArray = localStorage.unseenMailCount.split("|");
-	var i;
-	for(i=0;i<usernameArray.length;i++){
-		if(usernameArray[i] != "undefined"){
-			$(".content").append('<div class="email">'+usernameArray[i]+'</div><div class="unseen">'+unseenMailCountArray[i]+'</div>');
-		}
-	}
-}
+        $scope.button = "Add";
+        $scope.add = function(){
+            $scope.db = true;
+            if($scope.email === ""
+                || $scope.password === ""
+                || $scope.imapServer === ""
+                || $scope.imapPort === ""){
+                $scope.button = "Something is empty.";
+                $timeout(function(){
+                    $scope.button = "Add";
+                    $scope.db = false;
+                }, 2000);
+                return;
+            }
+            for(var i=0; i<$rootScope.accounts.length; i++){
+                if($rootScope.accounts[i].email === $scope.email){
+                    $rootScope.accounts.splice(i,1);
+                    break;
+                }
+            }
+            $rootScope.accounts.push({
+                email: $scope.email,
+                password: $scope.password,
+                imapServer: $scope.imapServer,
+                imapPort: $scope.imapPort
+            });
+            dbS.write($rootScope.accounts);
+            $scope.button = "Added";
+            $timeout(function(){
+                $scope.email = "";
+                $scope.password = "";
+                $scope.imapServer = "";
+                $scope.imapPort = "";
+                $scope.button = "Add";
+                $scope.db = false;
+            }, 2000);
+        }
+    }
+]);
 
-$(document).ready(function(){
-	init();
-});
+cs.controller('exampleC', ['$rootScope', '$scope',
+    function($rootScope, $scope) {
+        $rootScope.title = "Example - Mail Checker";
+        $rootScope.onManage = "";
+        $rootScope.onAdd = "";
+        $rootScope.onExample = "active";
+        $rootScope.onError = "";
+    }
+]);
+
+cs.controller('errorC', ['$rootScope', '$scope', 'dbS',
+    function($rootScope, $scope, dbS) {
+        $rootScope.title = "Error Message - Mail Checker";
+        $rootScope.onManage = "";
+        $rootScope.onAdd = "";
+        $rootScope.onExample = "";
+        $rootScope.onError = "active";
+        $scope.message = dbS.readMessage().reverse();
+        $scope.ok = false;
+        if($scope.message.length === 0){
+            $scope.ok = true;
+        }
+    }
+]);
+
+;//
+// directives module
+//
+// Author Cloud@txthinking.comm
+//
+
+'use strict';
+
+var ds = angular.module('ds', []);
+
+ds.directive('header', ["$location",
+    function($location) {
+        return {
+            templateUrl : "templates/header.html",
+            replace : true
+        }
+    }
+]);
+
+ds.directive('footer', [
+    function() {
+        return {
+            templateUrl : "templates/footer.html",
+            replace : true,
+            link : function(scope, element, attrs){
+                scope.year = new Date().getFullYear();
+            }
+        }
+    }
+]);
+
+;//
+// filters module
+//
+// Author Cloud@txthinking.comm
+//
+
+'use strict';
+
+;//
+// services module
+//
+// Author cloud@txthinking.com
+//
+
+'use strict';
+
+var ss = angular.module('ss', [
+]);
+
+ss.factory('dbS', ['callS',
+    function(callS){
+        var read = function(){
+            if(!localStorage.data){
+                return [];
+            }
+            return angular.fromJson(localStorage.data);
+        }
+        var write = function(obj){
+            var j = angular.toJson(obj);
+            localStorage.data = j;
+            callS.call();
+        }
+        var readMessage = function(){
+            if(!localStorage.message){
+                return [];
+            }
+            return angular.fromJson(localStorage.message);
+        }
+        return {
+            read : read,
+            write : write,
+            readMessage : readMessage
+        };
+    }
+]);
+
+ss.factory('callS', [
+    function(){
+        var call = function(){
+            chrome.extension.getBackgroundPage().init();
+            chrome.extension.getBackgroundPage().send();
+        }
+        return {
+            call : call
+        };
+    }
+]);
 ;angular.module('app').run(['$templateCache', function($templateCache) {
   'use strict';
+
+  $templateCache.put('templates/add.html',
+    "<div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "        <div class=\"col-md-4\">\n" +
+    "            <br/>\n" +
+    "            <h4>Add One</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"email\" type=\"email\" class=\"form-control\" placeholder=\"Email\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"imapServer\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Server\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "            <button ng-disabled=\"db\" class=\"btn btn-default\" ng-click=\"add()\">{{button}}</button>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/error.html',
+    "<div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-2\"></div>\n" +
+    "        <div class=\"col-md-8\">\n" +
+    "            <br/>\n" +
+    "            <p class=\"bg-danger\" ng-repeat=\"m in message\">{{m.email}} : {{m.message}}</p>\n" +
+    "            <p ng-if=\"ok\" class=\"bg-success\">Great!</p>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-2\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/example.html',
+    "<div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "        <div class=\"col-md-4\">\n" +
+    "            <br/>\n" +
+    "            <h4>Gmail</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"email\" class=\"form-control\" value=\"example@gmail.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"Your Password\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"imap.gmail.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "            <hr/>\n" +
+    "            <h4>Yahoo Mail</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"email\" class=\"form-control\" value=\"example@yahoo.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"Your Password\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"imap.mail.yahoo.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "            <hr/>\n" +
+    "            <h4>163</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"email\" class=\"form-control\" value=\"example@163.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"Your Password\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"imap.163.com\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993 or 143\">\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
 
   $templateCache.put('templates/footer.html',
     "<div class=\"container\">\n" +
     "    <hr/>\n" +
     "    <div>\n" +
     "    <p class=\"text-muted\">\n" +
-    "    &copy;{{year}} <a href=\"http://wwww.txthinking.com\">TxThinking<a/> | Open Source<a href=\"https://github.com/txthinking/MailCheckerChromeExtension\">https://github.com/txthinking/MailCheckerChromeExtension</a>\n" +
+    "        &copy;{{year}} <a href=\"http://wwww.txthinking.com\">TxThinking<a/>\n" +
+    "        <a class=\"pull-right\" href=\"https://github.com/txthinking/MailCheckerChromeExtension\">Open Source</a>\n" +
     "    </p>\n" +
     "    </div>\n" +
     "</div>\n"
@@ -33677,31 +33867,42 @@ $(document).ready(function(){
 
   $templateCache.put('templates/header.html',
     "<div class=\"container\">\n" +
-    "    <nav class=\"navbar navbar-default\" role=\"navigation\">\n" +
-    "        <div class=\"container-fluid\">\n" +
-    "            <a class=\"navbar-brand\" href=\"/\">Mail Checker</a>\n" +
-    "        </div>\n" +
-    "    </nav>\n" +
+    "    <ul class=\"nav nav-tabs nav-justified\">\n" +
+    "        <li class=\"{{onManage}}\"><a href=\"/manage\" ><strong>Manage</strong></a></li>\n" +
+    "        <li class=\"{{onAdd}}\"><a href=\"/add\" ><strong>Add One</strong></a></li>\n" +
+    "        <li class=\"{{onExample}}\"><a href=\"/example\"><strong>Example</strong></a></li>\n" +
+    "        <li class=\"{{onError}}\"><a href=\"/error\"><strong>Error Message</strong></a></li>\n" +
+    "    </ul>\n" +
     "</div>\n"
   );
 
 
-  $templateCache.put('templates/home.html',
+  $templateCache.put('templates/manage.html',
     "<div class=\"container\">\n" +
-    "    <ul class=\"nav nav-tabs\">\n" +
-    "        <li class=\"active\"><a href=\"#manage\" data-toggle=\"tab\">Manage</a></li>\n" +
-    "        <li><a href=\"#example\" data-toggle=\"tab\">Example</a></li>\n" +
-    "        <li><a href=\"#error\" data-toggle=\"tab\">Error Message</a></li>\n" +
-    "    </ul>\n" +
-    "\n" +
-    "    <div class=\"tab-content\">\n" +
-    "        <div class=\"tab-pane active\" id=\"manage\">...</div>\n" +
-    "        <div class=\"tab-pane\" id=\"example\">...</div>\n" +
-    "        <div class=\"tab-pane\" id=\"error\">...</div>\n" +
-    "    </div>\n" +
     "    <div class=\"row\">\n" +
-    "        <div class=\"col-md-6\"></div>\n" +
-    "        <div class=\"col-md-6\"></div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "        <div class=\"col-md-4\">\n" +
+    "            <br/>\n" +
+    "            <div ng-repeat=\"a in accounts\">\n" +
+    "                <h4>[{{a.email}}] <a href=\"javascript:void(0);\" ng-click=\"remove(a.email)\"><small class=\"pull-right\">Remove</small></a></h4>\n" +
+    "                <form role=\"form\">\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.email\" type=\"email\" class=\"form-control\" placeholder=\"Email\">\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.password\" type=\"password\" class=\"form-control\" placeholder=\"Password\">\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.imapServer\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Server\">\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
+    "                    </div>\n" +
+    "                </form>\n" +
+    "                <hr/>\n" +
+    "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
     "    </div>\n" +
     "</div>\n"
   );

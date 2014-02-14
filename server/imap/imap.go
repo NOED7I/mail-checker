@@ -13,8 +13,8 @@ import (
 )
 
 type Imap struct{
-    Server string
-    Port string
+    ImapServer string
+    ImapPort string
     Email string
     Password string
 }
@@ -29,10 +29,10 @@ func (imap *Imap)Unseen()(unseen int, err error){
     var out string
     var ok bool
 
-    if imap.Port == "993"{
-        nc, err = tls.Dial("tcp", imap.Server+":"+imap.Port, nil)
+    if imap.ImapPort == "993"{
+        nc, err = tls.Dial("tcp", imap.ImapServer+":"+imap.ImapPort, nil)
     }else{
-        nc, err = net.Dial("tcp", imap.Server+":"+imap.Port)
+        nc, err = net.Dial("tcp", imap.ImapServer+":"+imap.ImapPort)
     }
     if err != nil {
         return

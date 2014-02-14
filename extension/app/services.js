@@ -22,9 +22,16 @@ ss.factory('dbS', ['callS',
             localStorage.data = j;
             callS.call();
         }
+        var readMessage = function(){
+            if(!localStorage.message){
+                return [];
+            }
+            return angular.fromJson(localStorage.message);
+        }
         return {
             read : read,
-            write : write
+            write : write,
+            readMessage : readMessage
         };
     }
 ]);

@@ -30,13 +30,14 @@ cs.controller('manageC', ['$rootScope', '$scope', '$timeout', 'dbS',
     }
 ]);
 
-cs.controller('addC', ['$rootScope', '$scope', '$timeout',
-    function($rootScope, $scope, $timeout) {
+cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
+    function($rootScope, $scope, $timeout, dbS) {
         $rootScope.title = "Add - Mail Checker";
         $rootScope.onManage = "";
         $rootScope.onAdd = "active";
         $rootScope.onExample = "";
         $rootScope.onError = "";
+        $rootScope.accounts = dbS.read();
 
         $scope.email = "";
         $scope.password = "";
@@ -93,13 +94,18 @@ cs.controller('exampleC', ['$rootScope', '$scope',
     }
 ]);
 
-cs.controller('errorC', ['$rootScope', '$scope',
-    function($rootScope, $scope) {
+cs.controller('errorC', ['$rootScope', '$scope', 'dbS',
+    function($rootScope, $scope, dbS) {
         $rootScope.title = "Error Message - Mail Checker";
         $rootScope.onManage = "";
         $rootScope.onAdd = "";
         $rootScope.onExample = "";
         $rootScope.onError = "active";
+        $scope.message = dbS.readMessage().reverse();
+        $scope.ok = false;
+        if($scope.message.length === 0){
+            $scope.ok = true;
+        }
     }
 ]);
 

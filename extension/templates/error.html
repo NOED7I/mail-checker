@@ -3,7 +3,8 @@
         <div class="col-md-2"></div>
         <div class="col-md-8">
             <br/>
-            <div>{{message}}</div>
+            <p class="bg-danger" ng-repeat="m in message">{{m.email}} : {{m.message}}</p>
+            <p ng-if="ok" class="bg-success">Great!</p>
         </div>
         <div class="col-md-2"></div>
     </div>

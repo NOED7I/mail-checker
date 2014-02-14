@@ -8,8 +8,8 @@ const P = ""
 
 func TestUnseen(t *testing.T){
     var imap *Imap = new(Imap)
-    imap.Server = "imap.ym.163.com"
-    imap.Port = "993"
+    imap.ImapServer = "imap.ym.163.com"
+    imap.ImapPort = "993"
     imap.Email = "tmp@ym.txthinking.com"
     imap.Password = P
 
@@ -26,8 +26,8 @@ func BenchmarkUnseen(b *testing.B){
     for i:=0;i<b.N;i++{
         go func(){
             var imap *Imap = new(Imap)
-            imap.Server = "imap.ym.163.com"
-            imap.Port = "993"
+            imap.ImapServer = "imap.ym.163.com"
+            imap.ImapPort = "993"
             imap.Email = "tmp@ym.txthinking.com"
             imap.Password = P
 

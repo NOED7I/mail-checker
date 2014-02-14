@@ -24,7 +24,7 @@ module.exports = function(grunt){
                     'lib/angular/angular.js',
                     'lib/angular/angular-resource.js',
                     'lib/angular/angular-route.js',
-                    'js/*.js',
+                    'app/*.js',
                     '<%= ngtemplates.app.dest %>'
                 ],
                 dest: 'dist/<%= pkg.name %>.js'
