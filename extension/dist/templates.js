@@ -36,7 +36,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "        <div class=\"col-md-2\"></div>\n" +
     "        <div class=\"col-md-8\">\n" +
     "            <br/>\n" +
-    "            <p class=\"bg-danger\" ng-repeat=\"m in message\">{{m.email}} : {{m.message}}</p>\n" +
+    "            <p class=\"bg-danger\" ng-repeat=\"m in message\">[{{m.time}}] {{m.email}} : {{m.message}}</p>\n" +
     "            <p ng-if=\"ok\" class=\"bg-success\">Great!</p>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-2\"></div>\n" +
@@ -111,7 +111,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "    <div>\n" +
     "    <p class=\"text-muted\">\n" +
     "        &copy;{{year}} <a href=\"http://wwww.txthinking.com\">TxThinking<a/>\n" +
-    "        <a class=\"pull-right\" href=\"https://github.com/txthinking/MailCheckerChromeExtension\">Open Source</a>\n" +
+    "        <a class=\"pull-right\" href=\"https://github.com/txthinking/mail-checker\">Open Source</a>\n" +
     "    </p>\n" +
     "    </div>\n" +
     "</div>\n"
