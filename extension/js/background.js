@@ -1,3 +1,6 @@
+//
+// Author Cloud@txthinking.com
+//
 var REQUEST_KEY = "SUFNVEhJTktJTkcK";
 var key = false;
 var websocket = false;

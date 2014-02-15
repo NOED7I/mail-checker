@@ -1,3 +1,6 @@
+//
+// Author Cloud@txthinking.com
+//
 package imap
 
 import (
