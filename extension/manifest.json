@@ -15,7 +15,7 @@
   "permissions": [
     "tabs", "*://linode.txthinking.com/*"
    ],
-  "version": "2.0",
+  "version": "2.0.1",
 
   "manifest_version": 2
 }
