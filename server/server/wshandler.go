@@ -5,7 +5,6 @@ import(
     "../imap"
     "encoding/json"
     "time"
-    "log"
 )
 
 type Connection struct{
@@ -33,8 +32,6 @@ func StartPool(){
         select{
         case c = <- pool.In:
             pool.Connections[c.Key] = c
-            log.Println(c.Key, "come in")
-            log.Println(pool.Connections)
             go c.Query()
         case out = <- pool.Out:
             delete(pool.Connections, out)
@@ -44,7 +41,6 @@ func StartPool(){
 
 func (c *Connection)Query(){
     for{
-        time.Sleep(5 * time.Second)
         var ok bool
         if _, ok = pool.Connections[c.Key]; !ok{
             break
@@ -58,40 +54,34 @@ func (c *Connection)Query(){
                 var response Response = Response{
                     Email: i.Email,
                 }
-                log.Println("for", i.Email)
                 unseen, err = i.Unseen()
                 if err != nil{
-                    log.Println("for error", i.Email, err)
                     response.Ok = false
                     response.Message = err.Error()
                     r, err = response.Json()
+                    // server's response can't be parsed to json
                     if err != nil{
-                        err = websocket.Message.Send(c.Ws, "Error")
-                        log.Println("for send error!", err, i.Email, "Error")
+                        response.Message = "Server response can't be parsed to JSON, you can check you settings."
+                        r, _ = response.Json()
+                        err = websocket.Message.Send(c.Ws, r)
                         if err != nil{
                             pool.Out <- c.Key
                             return
                         }
+                        return
                     }
+                    // send server's response about error
                     err = websocket.Message.Send(c.Ws, r)
-                    log.Println("for send error", err, i.Email, r)
                     if err != nil{
                         pool.Out <- c.Key
                         return
                     }
                     return
                 }
-                log.Println("for ok", i.Email, unseen)
+                // send success message
                 response.Ok = true
                 response.Unseen = unseen
-                r, err = response.Json()
-                if err != nil{
-                    err = websocket.Message.Send(c.Ws, "Error")
-                    if err != nil{
-                        pool.Out <- c.Key
-                        return
-                    }
-                }
+                r, _ = response.Json()
                 err = websocket.Message.Send(c.Ws, r)
                 if err != nil{
                     pool.Out <- c.Key
@@ -99,6 +89,7 @@ func (c *Connection)Query(){
                 }
             }(i)
         }
+        time.Sleep(3 * time.Minute)
     }
 }
 
@@ -107,27 +98,18 @@ func (c *Connection)Receive(){
     var message []byte
     for{
         err = websocket.Message.Receive(c.Ws, &message)
-        log.Println("Receive", string(message))
         if err != nil{
             break
         }
+        var response Response = Response{}
         var r string
         c.Imaps = make([]*imap.Imap, 0)
         err = json.Unmarshal(message, &c.Imaps)
-        log.Println("Unmarshal", err, c.Imaps[0].Email, c.Imaps[0].ImapServer)
+        // The data received can't be parsed
         if err != nil{
-            var response Response = Response{
-                Ok: false,
-                Message: "Received error json data",
-            }
-            r, err = response.Json()
-            if err != nil{
-                err = websocket.Message.Send(c.Ws, "Error")
-                if err != nil{
-                    pool.Out <- c.Key
-                    break
-                }
-            }
+            response.Ok = false
+            response.Message = "You input some error data because it can't be parsed to json data"
+            r, _ = response.Json()
             err = websocket.Message.Send(c.Ws, r)
             if err != nil{
                 pool.Out <- c.Key
@@ -135,18 +117,9 @@ func (c *Connection)Receive(){
             }
             continue
         }
-
-        var response Response = Response{
-            Ok: true,
-        }
-        r, err = response.Json()
-        if err != nil{
-            err = websocket.Message.Send(c.Ws, "Error")
-            if err != nil{
-                pool.Out <- c.Key
-                break
-            }
-        }
+        // received success
+        response.Ok = true
+        r, _ = response.Json()
         err = websocket.Message.Send(c.Ws, r)
         if err != nil{
             pool.Out <- c.Key
@@ -172,9 +145,7 @@ func Ws(ws *websocket.Conn){
     c.Ws = ws
     c.Key = key
     pool.In <- c
-
     c.Receive()
-
     ws.Close()
 }
 

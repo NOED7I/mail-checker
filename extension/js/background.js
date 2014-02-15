@@ -1,13 +1,24 @@
-var key;
-var websocket;
+var REQUEST_KEY = "SUFNVEhJTktJTkcK";
+var key = false;
+var websocket = false;
 var number = 0;
+var hbtimes = 0;
 chrome.browserAction.setIcon({path: "img/unconnected.png"});
 
+function log(message){
+    var ms = JSON.parse(localStorage.message);
+    message.time = (new Date()).toLocaleString();
+    ms.push(message);
+    localStorage.message = JSON.stringify(ms);
+}
+
 function init(){
+    // clean message
     localStorage.message = JSON.stringify([]);
     if(!localStorage.data){
         localStorage.data = '[]';
     }
+    // init unseen
     var data = JSON.parse(localStorage.data);
     var us = [];
     var i;
@@ -15,31 +26,55 @@ function init(){
         us.push({email: data[i].email, unseen: 0});
     }
     localStorage.unseen = JSON.stringify(us);
-    console.log("init", localStorage.message);
-    console.log("init", localStorage.data);
-    console.log("init", localStorage.unseen);
 }
 
 function send(){
     if(!localStorage.data || localStorage.data === '[]'){
         return;
     }
-    if(websocket){
-        console.log("send", localStorage.data);
-        websocket.send(localStorage.data);
+    if(!websocket || websocket.readyState !== websocket.OPEN){
+        return;
+    }
+    websocket.send(localStorage.data);
+}
+
+function heartbeat(){
+    if(!websocket || websocket.readyState !== websocket.OPEN){
+        makeWebsocket();
+        hbtimes += 1;
+    }
+    if(websocket && websocket.readyState === websocket.OPEN){
+        hbtimes = 0;
+    }
+    if(hbtimes === 3){
+        log({email: "", message: "Connection error, maybe server has down."});
+        hbtimes = 0;
     }
 }
 
-$(document).ready(function(){
-    init();
+function makeKey(){
     $.ajax({
         async: false,
-        url: 'http://linode.txthinking.com:12345/',
-        success: function(data) {
-            key = data;
+        cache: false,
+        url: 'http://linode.txthinking.com:9000/',
+        type: "POST",
+        data: REQUEST_KEY,
+        complete: function(x, s) {
+            if(s === "success"){
+                key = x.responseText;
+            }else{
+                key = false;
+            }
         }
     });
-    websocket = new WebSocket("ws://linode.txthinking.com:12345/ws/" + key);
+}
+
+function makeWebsocket(){
+    makeKey();
+    if(!key){
+        return;
+    }
+    websocket = new WebSocket("ws://linode.txthinking.com:9000/ws/" + key);
     websocket.onopen = function(e){
         chrome.browserAction.setIcon({path: "img/connected.png"});
         chrome.browserAction.setBadgeBackgroundColor({color:[102, 102, 102, 255]});
@@ -47,21 +82,30 @@ $(document).ready(function(){
         send();
     }
     websocket.onclose = function(e) {
+        chrome.browserAction.setIcon({path: "img/unconnected.png"});
+        chrome.browserAction.setBadgeText({text:""});
     }
     websocket.onmessage = function(e){
-        handleMessage(JSON.parse(e.data));
+        if(e.type === "message"){
+            handleMessage(JSON.parse(e.data));
+        }
     }
     websocket.onerror = function(e) {
+        log({email: "", message: "Connection error, maybe server has down, or check your network."});
+        chrome.browserAction.setIcon({path: "img/unconnected.png"});
+        chrome.browserAction.setBadgeText({text:""});
     }
+}
+
+$(document).ready(function(){
+    init();
+    makeWebsocket();
+    setInterval(heartbeat, 1000*60*3);
 });
 
 function handleMessage(m){
-    console.log("receive", m);
     if(!m.Ok){
-        var ms = JSON.parse(localStorage.message);
-        ms.push({email: m.Email, message: m.Message});
-        localStorage.message = JSON.stringify(ms);
-        console.log("message", localStorage.message);
+        log({email: m.Email, message: m.Message});
         return;
     }
     if(m.Email === ""){

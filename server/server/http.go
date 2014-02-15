@@ -4,7 +4,7 @@ import(
     "net/http"
     "code.google.com/p/go.net/websocket"
     "log"
-    _ "net/http/pprof"
+    //_ "net/http/pprof"
 )
 
 func Run() {
@@ -12,7 +12,7 @@ func Run() {
     go StartPool()
     http.HandleFunc("/", Root)
     http.Handle("/ws/", websocket.Handler(Ws))
-    err = http.ListenAndServe("0.0.0.0:12345", nil)
+    err = http.ListenAndServe("0.0.0.0:9000", nil)
     if err != nil {
         log.Fatal("ListenAndServe:", err)
     }
