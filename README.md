@@ -5,5 +5,7 @@
 
 Install from [Chrome Web Store][cws]
 
+LICENSE: GPLv3
+
 [cws]: https://chrome.google.com/webstore/detail/mail-checker/kdpenmeldohpgfihheagknnofjhpbkji 
 
