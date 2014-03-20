@@ -33857,8 +33857,8 @@ ss.factory('callS', [
     "    <hr/>\n" +
     "    <div>\n" +
     "    <p class=\"text-muted\">\n" +
-    "        &copy;{{year}} <a href=\"http://wwww.txthinking.com\">TxThinking<a/>\n" +
-    "        <a class=\"pull-right\" href=\"https://github.com/txthinking/mail-checker\">Open Source</a>\n" +
+    "        &copy;{{year}} \n" +
+    "        <a href=\"https://github.com/txthinking/mail-checker\">Mail Checker(Open Source)</a>\n" +
     "    </p>\n" +
     "    </div>\n" +
     "</div>\n"

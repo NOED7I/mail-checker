@@ -5,7 +5,6 @@ var REQUEST_KEY = "SUFNVEhJTktJTkcK";
 var key = false;
 var websocket = false;
 var number = 0;
-var hbtimes = 0;
 chrome.browserAction.setIcon({path: "img/unconnected.png"});
 
 function log(message){
@@ -35,24 +34,18 @@ function send(){
     if(!localStorage.data || localStorage.data === '[]'){
         return;
     }
-    if(!websocket || websocket.readyState !== websocket.OPEN){
-        return;
-    }
     websocket.send(localStorage.data);
 }
 
 function heartbeat(){
-    if(!websocket || websocket.readyState !== websocket.OPEN){
+    if(!websocket || websocket.readyState === websocket.CLOSING || websocket.readyState === websocket.CLOSED){
         makeWebsocket();
-        hbtimes += 1;
+        return;
     }
-    if(websocket && websocket.readyState === websocket.OPEN){
-        hbtimes = 0;
+    if(websocket.readState === websocket.CONNECTING){
+        return;
     }
-    if(hbtimes === 3){
-        log({email: "", message: "Connection error, maybe server has down."});
-        hbtimes = 0;
-    }
+    websocket.send("HB");
 }
 
 function makeKey(){
@@ -81,12 +74,12 @@ function makeWebsocket(){
     websocket.onopen = function(e){
         chrome.browserAction.setIcon({path: "img/connected.png"});
         chrome.browserAction.setBadgeBackgroundColor({color:[102, 102, 102, 255]});
-        chrome.browserAction.setBadgeText({text:""});
+        chrome.browserAction.setBadgeText({text:String(number)});
         send();
     }
     websocket.onclose = function(e) {
+        log({email: "", message: "Connection error, maybe server has down, or check your network."});
         chrome.browserAction.setIcon({path: "img/unconnected.png"});
-        chrome.browserAction.setBadgeText({text:""});
     }
     websocket.onmessage = function(e){
         if(e.type === "message"){
@@ -96,14 +89,13 @@ function makeWebsocket(){
     websocket.onerror = function(e) {
         log({email: "", message: "Connection error, maybe server has down, or check your network."});
         chrome.browserAction.setIcon({path: "img/unconnected.png"});
-        chrome.browserAction.setBadgeText({text:""});
     }
 }
 
 $(document).ready(function(){
     init();
     makeWebsocket();
-    setInterval(heartbeat, 1000*60*3);
+    setInterval(heartbeat, 1000*60*1);
 });
 
 function handleMessage(m){
@@ -129,10 +121,6 @@ function handleMessage(m){
         return;
     }
     number = c;
-    if(number === 0){
-        chrome.browserAction.setBadgeText({text: ""});
-    }else{
-        chrome.browserAction.setBadgeText({text: String(number)});
-    }
+    chrome.browserAction.setBadgeText({text: String(number)});
 }
 

@@ -4,7 +4,7 @@
 package main
 
 import(
-    "./server"
+    "github.com/txthinking/mail-checker/server/server"
 )
 
 func main(){
