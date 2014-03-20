@@ -5,7 +5,7 @@ package server
 
 import(
     "code.google.com/p/go.net/websocket"
-    "../imap"
+    "github.com/txthinking/mail-checker/server/imap"
     "encoding/json"
     "time"
 )
@@ -92,7 +92,7 @@ func (c *Connection)Query(){
                 }
             }(i)
         }
-        time.Sleep(3 * time.Minute)
+        time.Sleep(2 * time.Minute)
     }
 }
 
@@ -104,11 +104,25 @@ func (c *Connection)Receive(){
         if err != nil{
             break
         }
+
         var response Response = Response{}
         var r string
+
+        // heartbeat
+        if string(message) == "HB"{
+            response.Ok = true
+            r, _ = response.Json()
+            err = websocket.Message.Send(c.Ws, r)
+            if err != nil{
+                pool.Out <- c.Key
+                break
+            }
+            continue
+        }
+
+        // data
         c.Imaps = make([]*imap.Imap, 0)
         err = json.Unmarshal(message, &c.Imaps)
-        // The data received can't be parsed
         if err != nil{
             response.Ok = false
             response.Message = "You input some error data because it can't be parsed to json data"
@@ -120,7 +134,6 @@ func (c *Connection)Receive(){
             }
             continue
         }
-        // received success
         response.Ok = true
         r, _ = response.Json()
         err = websocket.Message.Send(c.Ws, r)
