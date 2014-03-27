@@ -27,6 +27,10 @@ app.config(['$routeProvider','$locationProvider',
             templateUrl: 'templates/example.html',
             controller: 'exampleC'
         }).
+        when('/server', {
+            templateUrl: 'templates/server.html',
+            controller: 'serverC'
+        }).
         when('/error', {
             templateUrl: 'templates/error.html',
             controller: 'errorC'

@@ -33536,6 +33536,10 @@ app.config(['$routeProvider','$locationProvider',
             templateUrl: 'templates/example.html',
             controller: 'exampleC'
         }).
+        when('/server', {
+            templateUrl: 'templates/server.html',
+            controller: 'serverC'
+        }).
         when('/error', {
             templateUrl: 'templates/error.html',
             controller: 'errorC'
@@ -33564,6 +33568,7 @@ cs.controller('manageC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $rootScope.onManage = "active";
         $rootScope.onAdd = "";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
         $rootScope.accounts = dbS.read();
         $scope.remove = function(email){
@@ -33584,6 +33589,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $rootScope.onManage = "";
         $rootScope.onAdd = "active";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
         $rootScope.accounts = dbS.read();
 
@@ -33638,7 +33644,51 @@ cs.controller('exampleC', ['$rootScope', '$scope',
         $rootScope.onManage = "";
         $rootScope.onAdd = "";
         $rootScope.onExample = "active";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
+    }
+]);
+
+cs.controller('serverC', ['$rootScope', '$scope', '$timeout', 'dbS', 'callS',
+    function($rootScope, $scope, $timeout, dbS, callS) {
+        $rootScope.title = "Server - Mail Checker";
+        $rootScope.onManage = "";
+        $rootScope.onAdd = "";
+        $rootScope.onServer = "active";
+        $rootScope.onExample = "";
+        $rootScope.onError = "";
+
+        var o = dbS.readServer();
+        $scope.server0 = o.server0.server;
+        $scope.server1 = o.server1.server;
+        if(o.server0.used){
+            $scope.server0used = true;
+        }
+        if(o.server1.used){
+            $scope.server1used = true;
+        }
+
+        $scope.writeServer1 = function(){
+            var o = dbS.readServer();
+            o.server1.server = $scope.server1;
+            dbS.writeServer(o);
+        }
+
+        $scope.selectServer = function(s){
+            var o = dbS.readServer();
+            if(s === 'server0'){
+                o.server0.used = true;
+            }else{
+                o.server0.used = false;
+            }
+            if(s === 'server1'){
+                o.server1.used = true;
+            }else{
+                o.server1.used = false;
+            }
+            dbS.writeServer(o);
+            callS.changeServer();
+        }
     }
 ]);
 
@@ -33648,6 +33698,7 @@ cs.controller('errorC', ['$rootScope', '$scope', 'dbS',
         $rootScope.onManage = "";
         $rootScope.onAdd = "";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "active";
         $scope.message = dbS.readMessage().reverse();
         $scope.ok = false;
@@ -33726,10 +33777,32 @@ ss.factory('dbS', ['callS',
             }
             return angular.fromJson(localStorage.message);
         }
+        var readServer = function(){
+            if(!localStorage.server){
+                var s = {
+                    server0: {
+                        server: 'tx.txthinking.com:9000',
+                        used: true
+                    },
+                    server1: {
+                        server: '',
+                        used: false
+                    }
+                };
+                return s;
+            }
+            return angular.fromJson(localStorage.server);
+        }
+        var writeServer = function(obj){
+            var j = angular.toJson(obj);
+            localStorage.server = j;
+        }
         return {
             read : read,
             write : write,
-            readMessage : readMessage
+            readMessage : readMessage,
+            readServer : readServer,
+            writeServer : writeServer
         };
     }
 ]);
@@ -33740,13 +33813,16 @@ ss.factory('callS', [
             chrome.extension.getBackgroundPage().init();
             chrome.extension.getBackgroundPage().send();
         }
+        var changeServer = function(){
+            chrome.extension.getBackgroundPage().changeServer();
+        }
         return {
-            call : call
+            call : call,
+            changeServer : changeServer
         };
     }
 ]);
 ;angular.module('app').run(['$templateCache', function($templateCache) {
-  'use strict';
 
   $templateCache.put('templates/add.html',
     "<div class=\"container\">\n" +
@@ -33871,6 +33947,7 @@ ss.factory('callS', [
     "        <li class=\"{{onManage}}\"><a href=\"/manage\" ><strong>Manage</strong></a></li>\n" +
     "        <li class=\"{{onAdd}}\"><a href=\"/add\" ><strong>Add One</strong></a></li>\n" +
     "        <li class=\"{{onExample}}\"><a href=\"/example\"><strong>Example</strong></a></li>\n" +
+    "        <li class=\"{{onServer}}\"><a href=\"/server\"><strong>Server</strong></a></li>\n" +
     "        <li class=\"{{onError}}\"><a href=\"/error\"><strong>Error Message</strong></a></li>\n" +
     "    </ul>\n" +
     "</div>\n"
@@ -33901,6 +33978,39 @@ ss.factory('callS', [
     "                </form>\n" +
     "                <hr/>\n" +
     "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/server.html',
+    "<div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "        <div class=\"col-md-4\">\n" +
+    "            <br/>\n" +
+    "            <h4>Select Default Server</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"radio\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"radio\" name=\"optionsRadios\" ng-click=\"selectServer('server0')\" ng-checked=\"server0used\">\n" +
+    "                        <div class=\"form-group\">\n" +
+    "                            <input ng-model=\"server0\" type=\"text\" class=\"form-control\" disabled>\n" +
+    "                        </div>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"radio\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"radio\" name=\"optionsRadios\" ng-click=\"selectServer('server1')\" ng-checked=\"server1used\">\n" +
+    "                        <div class=\"form-group\">\n" +
+    "                            <input ng-change=\"writeServer1()\" ng-model=\"server1\" type=\"text\" class=\"form-control\">\n" +
+    "                        </div>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "            <a target=\"_blank\" href=\"https://github.com/txthinking/mail-checker\">Learn how to set you own server</a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-4\"></div>\n" +
     "    </div>\n" +

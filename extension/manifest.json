@@ -13,9 +13,9 @@
   "name": "Mail Checker",
   "options_page": "index.html",
   "permissions": [
-    "tabs", "*://linode.txthinking.com/*"
+    "tabs", "*://*/*"
    ],
-  "version": "2.0.3",
+  "version": "2.1.0",
 
   "manifest_version": 2
 }

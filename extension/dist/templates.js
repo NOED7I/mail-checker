@@ -1,5 +1,4 @@
 angular.module('app').run(['$templateCache', function($templateCache) {
-  'use strict';
 
   $templateCache.put('templates/add.html',
     "<div class=\"container\">\n" +
@@ -124,6 +123,7 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "        <li class=\"{{onManage}}\"><a href=\"/manage\" ><strong>Manage</strong></a></li>\n" +
     "        <li class=\"{{onAdd}}\"><a href=\"/add\" ><strong>Add One</strong></a></li>\n" +
     "        <li class=\"{{onExample}}\"><a href=\"/example\"><strong>Example</strong></a></li>\n" +
+    "        <li class=\"{{onServer}}\"><a href=\"/server\"><strong>Server</strong></a></li>\n" +
     "        <li class=\"{{onError}}\"><a href=\"/error\"><strong>Error Message</strong></a></li>\n" +
     "    </ul>\n" +
     "</div>\n"
@@ -154,6 +154,39 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                </form>\n" +
     "                <hr/>\n" +
     "            </div>\n" +
+    "        </div>\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "    </div>\n" +
+    "</div>\n"
+  );
+
+
+  $templateCache.put('templates/server.html',
+    "<div class=\"container\">\n" +
+    "    <div class=\"row\">\n" +
+    "        <div class=\"col-md-4\"></div>\n" +
+    "        <div class=\"col-md-4\">\n" +
+    "            <br/>\n" +
+    "            <h4>Select Default Server</h4>\n" +
+    "            <form role=\"form\">\n" +
+    "                <div class=\"radio\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"radio\" name=\"optionsRadios\" ng-click=\"selectServer('server0')\" ng-checked=\"server0used\">\n" +
+    "                        <div class=\"form-group\">\n" +
+    "                            <input ng-model=\"server0\" type=\"text\" class=\"form-control\" disabled>\n" +
+    "                        </div>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "                <div class=\"radio\">\n" +
+    "                    <label>\n" +
+    "                        <input type=\"radio\" name=\"optionsRadios\" ng-click=\"selectServer('server1')\" ng-checked=\"server1used\">\n" +
+    "                        <div class=\"form-group\">\n" +
+    "                            <input ng-change=\"writeServer1()\" ng-model=\"server1\" type=\"text\" class=\"form-control\">\n" +
+    "                        </div>\n" +
+    "                    </label>\n" +
+    "                </div>\n" +
+    "            </form>\n" +
+    "            <a target=\"_blank\" href=\"https://github.com/txthinking/mail-checker\">Learn how to set you own server</a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-4\"></div>\n" +
     "    </div>\n" +

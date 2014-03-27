@@ -1,0 +1,29 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-4">
+            <br/>
+            <h4>Select Default Server</h4>
+            <form role="form">
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" ng-click="selectServer('server0')" ng-checked="server0used">
+                        <div class="form-group">
+                            <input ng-model="server0" type="text" class="form-control" disabled>
+                        </div>
+                    </label>
+                </div>
+                <div class="radio">
+                    <label>
+                        <input type="radio" name="optionsRadios" ng-click="selectServer('server1')" ng-checked="server1used">
+                        <div class="form-group">
+                            <input ng-change="writeServer1()" ng-model="server1" type="text" class="form-control">
+                        </div>
+                    </label>
+                </div>
+            </form>
+            <a target="_blank" href="https://github.com/txthinking/mail-checker">Learn how to set you own server</a>
+        </div>
+        <div class="col-md-4"></div>
+    </div>
+</div>
