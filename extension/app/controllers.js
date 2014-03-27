@@ -16,6 +16,7 @@ cs.controller('manageC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $rootScope.onManage = "active";
         $rootScope.onAdd = "";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
         $rootScope.accounts = dbS.read();
         $scope.remove = function(email){
@@ -36,6 +37,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $rootScope.onManage = "";
         $rootScope.onAdd = "active";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
         $rootScope.accounts = dbS.read();
 
@@ -90,7 +92,51 @@ cs.controller('exampleC', ['$rootScope', '$scope',
         $rootScope.onManage = "";
         $rootScope.onAdd = "";
         $rootScope.onExample = "active";
+        $rootScope.onServer = "";
         $rootScope.onError = "";
+    }
+]);
+
+cs.controller('serverC', ['$rootScope', '$scope', '$timeout', 'dbS', 'callS',
+    function($rootScope, $scope, $timeout, dbS, callS) {
+        $rootScope.title = "Server - Mail Checker";
+        $rootScope.onManage = "";
+        $rootScope.onAdd = "";
+        $rootScope.onServer = "active";
+        $rootScope.onExample = "";
+        $rootScope.onError = "";
+
+        var o = dbS.readServer();
+        $scope.server0 = o.server0.server;
+        $scope.server1 = o.server1.server;
+        if(o.server0.used){
+            $scope.server0used = true;
+        }
+        if(o.server1.used){
+            $scope.server1used = true;
+        }
+
+        $scope.writeServer1 = function(){
+            var o = dbS.readServer();
+            o.server1.server = $scope.server1;
+            dbS.writeServer(o);
+        }
+
+        $scope.selectServer = function(s){
+            var o = dbS.readServer();
+            if(s === 'server0'){
+                o.server0.used = true;
+            }else{
+                o.server0.used = false;
+            }
+            if(s === 'server1'){
+                o.server1.used = true;
+            }else{
+                o.server1.used = false;
+            }
+            dbS.writeServer(o);
+            callS.changeServer();
+        }
     }
 ]);
 
@@ -100,6 +146,7 @@ cs.controller('errorC', ['$rootScope', '$scope', 'dbS',
         $rootScope.onManage = "";
         $rootScope.onAdd = "";
         $rootScope.onExample = "";
+        $rootScope.onServer = "";
         $rootScope.onError = "active";
         $scope.message = dbS.readMessage().reverse();
         $scope.ok = false;

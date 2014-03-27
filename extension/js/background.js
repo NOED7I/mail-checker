@@ -5,6 +5,7 @@ var REQUEST_KEY = "SUFNVEhJTktJTkcK";
 var key = false;
 var websocket = false;
 var number = 0;
+var server = 'tx.txthinking.com:9000';
 chrome.browserAction.setIcon({path: "img/unconnected.png"});
 
 function log(message){
@@ -15,12 +16,15 @@ function log(message){
 }
 
 function init(){
+
     // clean message
     localStorage.message = JSON.stringify([]);
     if(!localStorage.data){
         localStorage.data = '[]';
     }
+
     // init unseen
+    number = 0;
     var data = JSON.parse(localStorage.data);
     var us = [];
     var i;
@@ -28,6 +32,17 @@ function init(){
         us.push({email: data[i].email, unseen: 0});
     }
     localStorage.unseen = JSON.stringify(us);
+
+    // server
+    if(localStorage.server){
+        var o = JSON.parse(localStorage.server);
+        if(o.server0.used){
+            server = o.server0.server;
+        }
+        if(o.server1.used){
+            server = o.server1.server;
+        }
+    }
 }
 
 function send(){
@@ -52,7 +67,7 @@ function makeKey(){
     $.ajax({
         async: false,
         cache: false,
-        url: 'http://linode.txthinking.com:9000/',
+        url: "http://"+server,
         type: "POST",
         data: REQUEST_KEY,
         complete: function(x, s) {
@@ -70,7 +85,7 @@ function makeWebsocket(){
     if(!key){
         return;
     }
-    websocket = new WebSocket("ws://linode.txthinking.com:9000/ws/" + key);
+    websocket = new WebSocket("ws://"+server+"/ws/" + key);
     websocket.onopen = function(e){
         chrome.browserAction.setIcon({path: "img/connected.png"});
         chrome.browserAction.setBadgeBackgroundColor({color:[102, 102, 102, 255]});
@@ -97,6 +112,13 @@ $(document).ready(function(){
     makeWebsocket();
     setInterval(heartbeat, 1000*60*1);
 });
+
+function changeServer(){
+    chrome.browserAction.setIcon({path: "img/unconnected.png"});
+    websocket = false;
+    init();
+    makeWebsocket();
+}
 
 function handleMessage(m){
     if(!m.Ok){

@@ -28,10 +28,32 @@ ss.factory('dbS', ['callS',
             }
             return angular.fromJson(localStorage.message);
         }
+        var readServer = function(){
+            if(!localStorage.server){
+                var s = {
+                    server0: {
+                        server: 'tx.txthinking.com:9000',
+                        used: true
+                    },
+                    server1: {
+                        server: '',
+                        used: false
+                    }
+                };
+                return s;
+            }
+            return angular.fromJson(localStorage.server);
+        }
+        var writeServer = function(obj){
+            var j = angular.toJson(obj);
+            localStorage.server = j;
+        }
         return {
             read : read,
             write : write,
-            readMessage : readMessage
+            readMessage : readMessage,
+            readServer : readServer,
+            writeServer : writeServer
         };
     }
 ]);
@@ -42,8 +64,12 @@ ss.factory('callS', [
             chrome.extension.getBackgroundPage().init();
             chrome.extension.getBackgroundPage().send();
         }
+        var changeServer = function(){
+            chrome.extension.getBackgroundPage().changeServer();
+        }
         return {
-            call : call
+            call : call,
+            changeServer : changeServer
         };
     }
 ]);
