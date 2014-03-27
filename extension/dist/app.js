@@ -33672,6 +33672,9 @@ cs.controller('serverC', ['$rootScope', '$scope', '$timeout', 'dbS', 'callS',
             var o = dbS.readServer();
             o.server1.server = $scope.server1;
             dbS.writeServer(o);
+            if(o.server1.used){
+                callS.changeServer();
+            }
         }
 
         $scope.selectServer = function(s){
