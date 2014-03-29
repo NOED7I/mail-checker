@@ -24,7 +24,6 @@ function init(){
     }
 
     // init unseen
-    number = 0;
     var data = JSON.parse(localStorage.data);
     var us = [];
     var i;
@@ -32,6 +31,9 @@ function init(){
         us.push({email: data[i].email, unseen: 0});
     }
     localStorage.unseen = JSON.stringify(us);
+    number = 0;
+    chrome.browserAction.setBadgeText({text: String(number)});
+
 
     // server
     if(localStorage.server){
