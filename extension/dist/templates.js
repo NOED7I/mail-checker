@@ -20,6 +20,9 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <div class=\"form-group\">\n" +
     "                    <input ng-model=\"imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"link\" type=\"text\" class=\"form-control\" placeholder=\"A link (Optional)\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <button ng-disabled=\"db\" class=\"btn btn-default\" ng-click=\"add()\">{{button}}</button>\n" +
     "        </div>\n" +
@@ -64,6 +67,9 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"https://mail.google.com\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <hr/>\n" +
     "            <h4>Yahoo Mail</h4>\n" +
@@ -80,6 +86,9 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"https://mail.yahoo.com\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <hr/>\n" +
     "            <h4>163</h4>\n" +
@@ -95,6 +104,9 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993 or 143\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"http://mail.163.com\">\n" +
     "                </div>\n" +
     "            </form>\n" +
     "        </div>\n" +
@@ -150,6 +162,9 @@ angular.module('app').run(['$templateCache', function($templateCache) {
     "                    </div>\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <input disabled ng-model=\"a.imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.link\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
     "                    </div>\n" +
     "                </form>\n" +
     "                <hr/>\n" +

@@ -24,14 +24,15 @@ function init(){
     }
 
     // init unseen
-    number = 0;
     var data = JSON.parse(localStorage.data);
     var us = [];
     var i;
     for(i=0; i<data.length; i++){
-        us.push({email: data[i].email, unseen: 0});
+        us.push({email: data[i].email, unseen: 0, link: data[i].link});
     }
     localStorage.unseen = JSON.stringify(us);
+    number = 0;
+    chrome.browserAction.setBadgeText({text: String(number)});
 
     // server
     if(localStorage.server){

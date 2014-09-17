@@ -7,7 +7,7 @@ import(
     "net/http"
     "code.google.com/p/go.net/websocket"
     "log"
-    //_ "net/http/pprof"
+    _ "net/http/pprof"
 )
 
 func Run() {

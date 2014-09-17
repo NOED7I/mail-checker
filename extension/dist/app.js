@@ -33597,6 +33597,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $scope.password = "";
         $scope.imapServer = "";
         $scope.imapPort = "";
+        $scope.link = "";
 
         $scope.button = "Add";
         $scope.add = function(){
@@ -33622,7 +33623,8 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
                 email: $scope.email,
                 password: $scope.password,
                 imapServer: $scope.imapServer,
-                imapPort: $scope.imapPort
+                imapPort: $scope.imapPort,
+                link: $scope.link
             });
             dbS.write($rootScope.accounts);
             $scope.button = "Added";
@@ -33631,6 +33633,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
                 $scope.password = "";
                 $scope.imapServer = "";
                 $scope.imapPort = "";
+                $scope.link = "";
                 $scope.button = "Add";
                 $scope.db = false;
             }, 2000);
@@ -33847,6 +33850,9 @@ ss.factory('callS', [
     "                <div class=\"form-group\">\n" +
     "                    <input ng-model=\"imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input ng-model=\"link\" type=\"text\" class=\"form-control\" placeholder=\"A link (Optional)\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <button ng-disabled=\"db\" class=\"btn btn-default\" ng-click=\"add()\">{{button}}</button>\n" +
     "        </div>\n" +
@@ -33891,6 +33897,9 @@ ss.factory('callS', [
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"https://mail.google.com\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <hr/>\n" +
     "            <h4>Yahoo Mail</h4>\n" +
@@ -33907,6 +33916,9 @@ ss.factory('callS', [
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993\">\n" +
     "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"https://mail.yahoo.com\">\n" +
+    "                </div>\n" +
     "            </form>\n" +
     "            <hr/>\n" +
     "            <h4>163</h4>\n" +
@@ -33922,6 +33934,9 @@ ss.factory('callS', [
     "                </div>\n" +
     "                <div class=\"form-group\">\n" +
     "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"993 or 143\">\n" +
+    "                </div>\n" +
+    "                <div class=\"form-group\">\n" +
+    "                    <input disabled=\"disabled\" type=\"text\" class=\"form-control\" value=\"http://mail.163.com\">\n" +
     "                </div>\n" +
     "            </form>\n" +
     "        </div>\n" +
@@ -33977,6 +33992,9 @@ ss.factory('callS', [
     "                    </div>\n" +
     "                    <div class=\"form-group\">\n" +
     "                        <input disabled ng-model=\"a.imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
+    "                    </div>\n" +
+    "                    <div class=\"form-group\">\n" +
+    "                        <input disabled ng-model=\"a.link\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
     "                    </div>\n" +
     "                </form>\n" +
     "                <hr/>\n" +

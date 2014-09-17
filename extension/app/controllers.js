@@ -45,6 +45,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
         $scope.password = "";
         $scope.imapServer = "";
         $scope.imapPort = "";
+        $scope.link = "";
 
         $scope.button = "Add";
         $scope.add = function(){
@@ -70,7 +71,8 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
                 email: $scope.email,
                 password: $scope.password,
                 imapServer: $scope.imapServer,
-                imapPort: $scope.imapPort
+                imapPort: $scope.imapPort,
+                link: $scope.link
             });
             dbS.write($rootScope.accounts);
             $scope.button = "Added";
@@ -79,6 +81,7 @@ cs.controller('addC', ['$rootScope', '$scope', '$timeout', 'dbS',
                 $scope.password = "";
                 $scope.imapServer = "";
                 $scope.imapPort = "";
+                $scope.link = "";
                 $scope.button = "Add";
                 $scope.db = false;
             }, 2000);
