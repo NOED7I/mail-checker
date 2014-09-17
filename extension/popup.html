@@ -13,10 +13,12 @@
                 <tr>
                     <th>EMAIL</th>
                     <th>UNSEEN</th>
+                    <th>LINK</th>
                 </tr>
                 <tr ng-repeat="u in us">
                     <td>{{u.email}}</td>
                     <td>{{u.unseen}}</td>
+                    <td><a href ng-click="linkto(u.link)">Go</a></td>
                 </tr>
             </table>
         </div>
