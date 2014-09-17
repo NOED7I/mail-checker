@@ -33994,7 +33994,7 @@ ss.factory('callS', [
     "                        <input disabled ng-model=\"a.imapPort\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
     "                    </div>\n" +
     "                    <div class=\"form-group\">\n" +
-    "                        <input disabled ng-model=\"a.link\" type=\"text\" class=\"form-control\" placeholder=\"IMAP Port\">\n" +
+    "                        <input disabled ng-model=\"a.link\" type=\"text\" class=\"form-control\" placeholder=\"A link\">\n" +
     "                    </div>\n" +
     "                </form>\n" +
     "                <hr/>\n" +
