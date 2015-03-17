@@ -1,4 +1,5 @@
 angular.module('app').run(['$templateCache', function($templateCache) {
+  'use strict';
 
   $templateCache.put('templates/add.html',
     "<div class=\"container\">\n" +

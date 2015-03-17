@@ -33787,7 +33787,7 @@ ss.factory('dbS', ['callS',
             if(!localStorage.server){
                 var s = {
                     server0: {
-                        server: 'tx.txthinking.com:9000',
+                        server: 'freedom.txthinking.com:9000',
                         used: true
                     },
                     server1: {
@@ -33829,6 +33829,7 @@ ss.factory('callS', [
     }
 ]);
 ;angular.module('app').run(['$templateCache', function($templateCache) {
+  'use strict';
 
   $templateCache.put('templates/add.html',
     "<div class=\"container\">\n" +
