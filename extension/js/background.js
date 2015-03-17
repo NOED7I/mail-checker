@@ -5,7 +5,7 @@ var REQUEST_KEY = "SUFNVEhJTktJTkcK";
 var key = false;
 var websocket = false;
 var number = 0;
-var server = 'tx.txthinking.com:9000';
+var server = 'freedom.txthinking.com:9000';
 chrome.browserAction.setIcon({path: "img/unconnected.png"});
 
 function log(message){
