@@ -33787,7 +33787,7 @@ ss.factory('dbS', ['callS',
             if(!localStorage.server){
                 var s = {
                     server0: {
-                        server: 'freedom.txthinking.com:9000',
+                        server: 'https://mail-checker.txthinking.com',
                         used: true
                     },
                     server1: {
@@ -34032,7 +34032,7 @@ ss.factory('callS', [
     "                    </label>\n" +
     "                </div>\n" +
     "            </form>\n" +
-    "            <a target=\"_blank\" href=\"https://github.com/txthinking/mail-checker\">Learn how to set you own server</a>\n" +
+    "            <a target=\"_blank\" href=\"https://github.com/txthinking/mail-checker\">If you are a developer, Learn how to set you own server</a>\n" +
     "        </div>\n" +
     "        <div class=\"col-md-4\"></div>\n" +
     "    </div>\n" +

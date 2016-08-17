@@ -5,7 +5,7 @@ var REQUEST_KEY = "SUFNVEhJTktJTkcK";
 var key = false;
 var websocket = false;
 var number = 0;
-var server = 'freedom.txthinking.com:9000';
+var server = 'https://mail-checker.txthinking.com';
 chrome.browserAction.setIcon({path: "img/unconnected.png"});
 
 function log(message){
@@ -68,7 +68,7 @@ function makeKey(){
     $.ajax({
         async: false,
         cache: false,
-        url: "http://"+server,
+        url: server,
         type: "POST",
         data: REQUEST_KEY,
         complete: function(x, s) {
@@ -86,7 +86,7 @@ function makeWebsocket(){
     if(!key){
         return;
     }
-    websocket = new WebSocket("ws://"+server+"/ws/" + key);
+    websocket = new WebSocket(server.replace('https', 'wss')+"/ws/" + key);
     websocket.onopen = function(e){
         chrome.browserAction.setIcon({path: "img/connected.png"});
         chrome.browserAction.setBadgeBackgroundColor({color:[102, 102, 102, 255]});

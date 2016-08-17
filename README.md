@@ -8,6 +8,7 @@
 * `$ go version` # need go 1.1+ installed.
 * `$ go get github.com/txthinking/mail-checker/server`
 * `$ server` # this will open `0.0.0.0:9000`
+* let server behind a https web server 
 
 > Install from [Chrome Web Store][cws]
 

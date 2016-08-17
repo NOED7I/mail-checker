@@ -1,6 +1,6 @@
 {
     "name": "app",
-    "version": "0.0.1",
+    "version": "2.0.1",
     "description": "www.txthinking.com",
     "devDependencies": {
         "grunt": "~0.4.2",

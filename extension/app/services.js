@@ -32,7 +32,7 @@ ss.factory('dbS', ['callS',
             if(!localStorage.server){
                 var s = {
                     server0: {
-                        server: 'freedom.txthinking.com:9000',
+                        server: 'https://mail-checker.txthinking.com',
                         used: true
                     },
                     server1: {
