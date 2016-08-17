@@ -5,7 +5,7 @@ package server
 
 import(
     "net/http"
-    "code.google.com/p/go.net/websocket"
+    "golang.org/x/net/websocket"
     "log"
     _ "net/http/pprof"
 )

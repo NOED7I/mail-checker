@@ -4,7 +4,7 @@
 package server
 
 import(
-    "code.google.com/p/go.net/websocket"
+    "golang.org/x/net/websocket"
     "github.com/txthinking/mail-checker/server/imap"
     "encoding/json"
     "time"
